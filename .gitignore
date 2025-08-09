@@ -1,3 +1,6 @@
+# making sure ot not commit the SDK libs 
+libs/*
+
 # Compiled class file
 *.class
 
