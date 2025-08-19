@@ -136,8 +136,12 @@ Ensure that you have:
 | APICP_RUNTIME_CAPACITY_VALUE   | *Optional*. The approximate estimate of the throughput that a runtime can handle for the specified duration.| Default value: *500000* <br><br>If you do not specify a value for this property, the default value is considered. |
 | APICP_RUNTIME_CAPACITY_UNIT  | *Optional*. Choose the unit of duration in which the capacity must be defined. | Possible values are as follows:<ul><li>*PER_SECOND*</li><li>PER_MINUTE </li><li>*PER_HOUR*</li><li>*PER_DAY* </li><li>*PER_WEEK*</li><li>*PER_MONTH* </li><li>*PER_YEAR* (Default value)</li></ul><br><br>If you do not specify a value for this property, the default value is considered.|
 | APICP_RUNTIME_TYPE | *Mandatory*. The runtime type. | Ensure to verify if the runtime type exists in API Control Plane. If it does not exist, use the Runtime Type Management Service REST API to add the runtime type. For details, see [How to create the runtime type?](../docs/runtime_service_mgmt_api.md) |	
-| APICP_LOG_LEVEL | *Optional*. The level of logs to be captured.| <ul><li>*ALL*</li><li>*ERROR*</li><li>*INFO* (Default value)</li><li>*TRACE*</li></ul><br><br>If you do not specify a value for this property, the default value is considered.|	
-
+| APICP_RUNTIME_NAME  | *Optional*. api runtime name | if not specified, will be set to the actual name of the Azure api gateway |
+| APICP_RUNTIME_DESCRIPTION  | *Optional*. Description about the Azure API Gateway name | if not specified, no description added |
+| APICP_RUNTIME_REGION  | *Optional*. The region for the Azure API Gateway name | if not specified, the value will be set from the actual Azure region for the Azure API Gateway |
+| APICP_RUNTIME_LOCATION  | *Optional*. The location for the Azure API Gateway name | if not specified, the value will be set from the actual Azure location for the Azure API Gateway |
+| APICP_RUNTIME_TAGS  | *Optional*. Tags for the Azure API Gateway name | if not specified, the value will be set to the tags set in Azure API Gateway |
+| APICP_LOG_LEVEL | *Optional*. The level of logs to be captured.| <ul><li>*ALL*</li><li>*ERROR*</li><li>*INFO* (Default value)</li><li>*TRACE*</li></ul><br><br>If you do not specify a value for this property, the default value is considered.|
 
 
 2. Run the following command:

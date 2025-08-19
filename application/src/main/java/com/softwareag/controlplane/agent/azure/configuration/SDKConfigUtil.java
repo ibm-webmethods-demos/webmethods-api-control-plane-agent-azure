@@ -14,6 +14,7 @@ import com.softwareag.controlplane.agentsdk.api.config.RuntimeConfig;
 import com.softwareag.controlplane.agentsdk.api.config.TlsConfig;
 import com.softwareag.controlplane.agentsdk.model.Capacity;
 import com.softwareag.controlplane.agentsdk.model.Runtime;
+import java.util.Set;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 
@@ -58,26 +59,46 @@ public final class SDKConfigUtil {
 
     public static RuntimeConfig runtimeConfig(AzureProperties azureProperties,RuntimeProperties runtimeProperties, AzureManagersHolder managerHolder){
 
-        Location location = managerHolder.getAzureResourceManager().subscriptions()
-                .getById(azureProperties.getSubscriptionId())
-                .getLocationByRegion(Region.fromName(managerHolder.getApiService().regionName()));
+        //name block
+        String runtimeName = ObjectUtils.isEmpty(runtimeProperties.getName()) ? azureProperties.getApiManagementServiceName() : runtimeProperties.getName();
 
+        //region block
+        Region azureRegion = Region.fromName(managerHolder.getApiService().regionName());
+        String runtimeRegion = ObjectUtils.isEmpty(runtimeProperties.getRegion()) && ObjectUtils.isNotEmpty(azureRegion) ?
+               azureRegion.toString() : runtimeProperties.getRegion();
+
+        //location block
+        Location azureLocation = managerHolder.getAzureResourceManager().subscriptions()
+                .getById(azureProperties.getSubscriptionId())
+                .getLocationByRegion(azureRegion);
+        String runtimeLocation = ObjectUtils.isEmpty(runtimeProperties.getLocation()) && ObjectUtils.isNotEmpty(azureLocation) ?
+               azureLocation.physicalLocation() : runtimeProperties.getLocation();
+
+        //tags block
+        Set<String> runtimeTags = ObjectUtils.isEmpty(runtimeProperties.getTags()) ? AzureAgentUtil.convertTags(managerHolder.getApiService().tags()) : runtimeProperties.getTags();
+
+        //capacity block
         Capacity capacity = null;
         if(ObjectUtils.isNotEmpty(runtimeProperties.getCapacityValue())) {
             capacity = new Capacity();
             capacity.setUnit(Capacity.TimeUnit.valueOf(runtimeProperties.getCapacityUnit()));
             capacity.setValue(Long.parseLong(runtimeProperties.getCapacityValue()));
         }
+
         // runtime ID = subscriptionId_serviceName
         String runtimeId =
                 azureProperties.getSubscriptionId() + Constants.UNDERSCORE + azureProperties.getApiManagementServiceName();
-        return new RuntimeConfig.Builder(runtimeId,
-                azureProperties.getApiManagementServiceName(), runtimeProperties.getType(),
+        
+        String runtimeHost = String.format("https://%s.developer.azure-api.net", azureProperties.getApiManagementServiceName());
+
+        return new RuntimeConfig.Builder(runtimeId, runtimeName, runtimeProperties.getType(),
                 Runtime.DeploymentType.PUBLIC_CLOUD)
-                .region(managerHolder.getApiService().regionName())
-                .location(location.physicalLocation())
-                .tags(AzureAgentUtil.convertTags(managerHolder.getApiService().tags()))
+                .description(runtimeProperties.getDescription())
+                .region(runtimeRegion)
+                .location(runtimeLocation)
+                .tags(runtimeTags)
                 .capacity(capacity)
+                .host(runtimeHost)
                 .build();
     }
 

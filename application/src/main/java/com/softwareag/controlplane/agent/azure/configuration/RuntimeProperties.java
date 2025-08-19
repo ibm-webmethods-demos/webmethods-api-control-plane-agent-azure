@@ -6,6 +6,7 @@ package com.softwareag.controlplane.agent.azure.configuration;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,6 +20,30 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @Validated
 public class RuntimeProperties {
+    /**
+     * Name for the Azure API Gateway  - if not specified, the value will be set from the actual name of the Azure API Gateway
+     */
+    private String name;
+    
+    /**
+     * Description about the Azure API Gateway name
+     */
+    private String description;
+    
+    /**
+     * The region for the Azure API Gateway name - if not specified, the value will be set from the actual Azure region for the Azure API Gateway
+     */
+    private String region;
+    
+    /**
+     * The location for the Azure API Gateway name - if not specified, the value will be set from the actual Azure location for the Azure API Gateway
+     */
+    private String location;
+    
+    /**
+     * Tags for the Azure API Gateway name
+     */
+    private Set<String> tags;
 
     /**
      * The API Management Service transaction capacity is represented as number in here
